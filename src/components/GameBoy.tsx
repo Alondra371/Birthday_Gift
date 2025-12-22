@@ -4,21 +4,22 @@ import { Controls } from "./Controls";
 
 type PowerState = "off" | "booting" | "on";
 type GameState =
-    | "home"
-    | "splash"
-    | "character-design"
-    | "battle"
-    | "win"
-    | "lose"
-    | "credits";
+  | "home"
+  | "splash"
+  | "character-creation"
+  | "battle"
+  | "win"
+  | "lose"
+  | "credits";
 
 export interface CharacterEquipment {
-    head: string | null;
-    body: string | null;
-    feet: string | null;
+  head: string | null;
+  body: string | null;
+  feet: string | null;
 }
 
-export function GameBoy() { const [powerState, setPowerState] = useState<PowerState>("off");
+export function GameBoy() {
+  const [powerState, setPowerState] = useState<PowerState>("off");
   const [gameState, setGameState] = useState<GameState>("home");
   const [characterEquipment, setCharacterEquipment] =
     useState<CharacterEquipment>({
