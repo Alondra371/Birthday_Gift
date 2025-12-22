@@ -1,0 +1,28 @@
+:root {
+    --font-size: 16px;
+
+    /* Gameboy colors */
+  --gb-shell-top: #a0e7e5;
+  --gb-shell-bottom: #7dd3d1;
+  --gb-plastic-shadow: rgba(0, 0, 0, 0.3);
+
+  --gb-bezel-top: #8b8b8b;
+  --gb-bezel-bottom: #5a5a5a;
+
+  --gb-gold-top: #f4d03f;
+  --gb-gold-bottom: #c9a227;
+
+  --gb-lcd-off: #000000;
+  --gb-lcd-on: #e8e4d0;
+
+  --gb-home-lilac-top: #e0c3fc;
+  --gb-home-lilac-bottom: #d5c3e8;
+
+  --gb-splash-blue-top: #b8d8f8;
+  --gb-splash-blue-bottom: #a8c8e8;
+
+  --gb-yellow: #ffd93d;
+  --gb-pink: #ffc1cc;
+  --gb-mint: #a8e6cf;
+  --gb-soft-text: #8b6f9e;
+}
