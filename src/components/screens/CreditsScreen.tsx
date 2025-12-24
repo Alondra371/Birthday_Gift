@@ -1,48 +1,69 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const CREDITS = [
-  { label: 'Creator', value: 'Alondra Castro' },
-  { label: 'Illustrator', value: 'Figma' },
-  { label: 'Game Director', value: 'My sleepless nights' },
-  { label: 'QA', value: 'Coffee ☕' },
-  { label: 'Special Thanks', value: 'Ernesto 🎂' },
-  { label: 'Powered By', value: 'Care, birthday magic,' },
-  { label: '', value: 'and nostalgia ✨' },
+  { label: "Creator", value: "Alondra Castro" },
+  { label: "Illustrator", value: "Figma" },
+  { label: "Game Director", value: "My sleepless nights" },
+  { label: "QA", value: "Coffee ☕" },
+  { label: "Special Thanks", value: "Ernesto 🎂" },
+  { label: "Powered By", value: "Care, birthday magic," },
+  { label: "", value: "and nostalgia ✨" },
 ];
 
 interface CreditsScreenProps {
   onReturnHome: () => void;
 }
 
+type Sparkle = {
+  id: number;
+  left: number;
+  top: number;
+  dur: number;
+  delay: number;
+  opacity: number;
+};
+
 export function CreditsScreen({ onReturnHome }: CreditsScreenProps) {
   const [offset, setOffset] = useState(0);
+  const [sparkles, setSparkles] = useState<Sparkle[]>([]);
+
+  // ✅ Generate random sparkle positions ONCE (no Math.random during render)
+  useEffect(() => {
+    setSparkles(
+      Array.from({ length: 15 }, (_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        dur: 2 + Math.random() * 3,
+        delay: Math.random() * 2,
+        opacity: 0.4 + Math.random() * 0.4,
+      }))
+    );
+  }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setOffset(prev => prev + 1);
-    }, 50);
-
+    const interval = setInterval(() => setOffset((prev) => prev + 1), 50);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div 
+    <div
       className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)',
+        background: "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)",
       }}
     >
       {/* Floating sparkles */}
-      {[...Array(15)].map((_, i) => (
+      {sparkles.map((s) => (
         <div
-          key={i}
+          key={s.id}
           className="absolute text-yellow-300"
           style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 2}s`,
-            opacity: 0.6,
+            left: `${s.left}%`,
+            top: `${s.top}%`,
+            animation: `twinkle ${s.dur}s ease-in-out infinite`,
+            animationDelay: `${s.delay}s`,
+            opacity: s.opacity,
           }}
         >
           ✨
@@ -51,11 +72,11 @@ export function CreditsScreen({ onReturnHome }: CreditsScreenProps) {
 
       {/* Title */}
       <div className="absolute top-8 left-0 right-0 text-center z-10">
-        <div 
+        <div
           className="text-2xl font-bold mb-2"
           style={{
-            color: '#ffd93d',
-            textShadow: '2px 2px 0 #c9a227',
+            color: "#ffd93d",
+            textShadow: "2px 2px 0 #c9a227",
           }}
         >
           🎮 CREDITS 🎮
@@ -63,32 +84,32 @@ export function CreditsScreen({ onReturnHome }: CreditsScreenProps) {
       </div>
 
       {/* Scrolling Credits */}
-      <div 
+      <div
         className="absolute left-0 right-0 flex flex-col items-center gap-6 py-8"
         style={{
           transform: `translateY(${Math.max(-offset, -600)}px)`,
         }}
       >
-        <div className="h-32" /> {/* Spacer */}
-        
+        <div className="h-32" />
+
         {CREDITS.map((credit, index) => (
           <div key={index} className="text-center px-4">
             {credit.label && (
-              <div 
+              <div
                 className="text-sm font-bold mb-1"
                 style={{
-                  color: '#b8d8f8',
-                  textShadow: '1px 1px 0 #f4d03f',
+                  color: "#b8d8f8",
+                  textShadow: "1px 1px 0 #f4d03f",
                 }}
               >
                 {credit.label}
               </div>
             )}
-            <div 
+            <div
               className="text-lg font-bold"
               style={{
-                color: '#ffd93d',
-                textShadow: '2px 2px 0 #c9a227',
+                color: "#ffd93d",
+                textShadow: "2px 2px 0 #c9a227",
               }}
             >
               {credit.value}
@@ -98,41 +119,38 @@ export function CreditsScreen({ onReturnHome }: CreditsScreenProps) {
 
         <div className="mt-12 text-center">
           <div className="text-4xl mb-4">🎂</div>
-          <div 
+          <div
             className="text-xl font-bold mb-4"
             style={{
-              color: '#ffc1cc',
-              textShadow: '2px 2px 0 #c97a8f',
+              color: "#ffc1cc",
+              textShadow: "2px 2px 0 #c97a8f",
             }}
           >
             Thank you for playing!
           </div>
-          
-          {/* SELECT Button */}
+
           <button
             onClick={onReturnHome}
             className="px-8 py-3 rounded-lg text-sm font-bold transition-all hover:scale-105 active:scale-95 mb-2"
             style={{
-              background: 'linear-gradient(145deg, #a8e6cf, #88d4ab)',
-              border: '3px solid #f4d03f',
-              color: '#2d5016',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+              background: "linear-gradient(145deg, #a8e6cf, #88d4ab)",
+              border: "3px solid #f4d03f",
+              color: "#2d5016",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
             }}
           >
             SELECT - Return to Home
           </button>
-          
-          <div 
+
+          <div
             className="text-xs font-semibold animate-pulse"
-            style={{
-              color: '#b8d8f8',
-            }}
+            style={{ color: "#b8d8f8" }}
           >
             Press SELECT to restart
           </div>
         </div>
 
-        <div className="h-64" /> {/* Bottom spacer */}
+        <div className="h-64" />
       </div>
 
       <style>{`
