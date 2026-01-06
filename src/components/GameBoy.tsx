@@ -1,133 +1,61 @@
 import { useState } from "react";
 import { Screen } from "./Screen";
-import { Controls } from "./Controls";
 
-type PowerState = "off" | "booting" | "on";
-type GameState =
-  | "home"
-  | "splash"
-  | "character-creation"
-  | "battle"
-  | "win"
-  | "lose"
-  | "credits";
+/** Which character sheet to use */
+export type CharacterId = "snoopy" | "luffy" | "zoro";
 
-export interface CharacterEquipment {
-  head: string | null;
-  body: string | null;
-  feet: string | null;
-}
+/** Basic game state */
+export type GameState = "home" | "character-select" | "battle" | "win" | "lose" | "credits";
+
+/** Optional: power state if your UI simulates a GameBoy boot */
+export type PowerState = "off" | "booting" | "on";
 
 export function GameBoy() {
-  const [powerState, setPowerState] = useState<PowerState>("off");
+  // If you don't care about power states, you can hardcode "on"
+  const [powerState, setPowerState] = useState<PowerState>("on");
+
   const [gameState, setGameState] = useState<GameState>("home");
-  const [characterEquipment, setCharacterEquipment] =
-    useState<CharacterEquipment>({
-      head: null,
-      body: null,
-      feet: null,
-    });
 
-  const [dpadDirection, setDpadDirection] = useState<string | null>(null);
-  const [aButtonPressed, setAButtonPressed] = useState(false);
-  const [bButtonPressed, setBButtonPressed] = useState(false);
+  // Selected character (no accessories, no equipment)
+  const [character, setCharacter] = useState<CharacterId>("snoopy");
 
-  const handlePowerToggle = () => {
-    if (powerState === "off") {
-      setPowerState("booting");
-      setTimeout(() => {
-        setPowerState("on");
-        setGameState("home");
-      }, 1200);
-    } else {
-      setPowerState("off");
-      setGameState("home");
-      setCharacterEquipment({ head: null, body: null, feet: null });
-    }
-  };
-
-  const handleButtonPress = (button: string) => {
-    if (powerState !== "on") return;
-
-    if (button === "a") {
-      setAButtonPressed(true);
-      setTimeout(() => setAButtonPressed(false), 120);
-    }
-    if (button === "b") {
-      setBButtonPressed(true);
-      setTimeout(() => setBButtonPressed(false), 120);
-    }
-
-    if (button === "start") {
-      if (gameState === "home") setGameState("splash");
-      else if (gameState === "splash") setGameState("character-creation");
-      else if (gameState === "character-creation") setGameState("battle");
-      else if (gameState === "win" || gameState === "lose")
-        setGameState("credits");
-    }
-
-    if (button === "select") {
-      if (gameState === "credits") {
-        setGameState("home");
-        setCharacterEquipment({ head: null, body: null, feet: null });
-      }
-    }
-
-    // allow A as "continue" on win/lose
-    if (button === "a") {
-      if (gameState === "win" || gameState === "lose") setGameState("credits");
-    }
-  };
-
-  const handleDPadPress = (direction: string) => {
-    if (powerState !== "on") return;
-    setDpadDirection(direction);
-    setTimeout(() => setDpadDirection(null), 120);
-  };
+  // Example: if you had a power button before
+  function togglePower() {
+    setPowerState((prev) => (prev === "on" ? "off" : "on"));
+    if (powerState === "on") setGameState("home");
+  }
 
   return (
-    <div className="relative w-full max-w-md mx-auto">
-      <div
-        className="relative rounded-[2rem] p-6 shadow-2xl"
-        style={{
-          background:
-            "linear-gradient(145deg, var(--gb-shell-top), var(--gb-shell-bottom))",
-          boxShadow:
-            "0 20px 60px var(--gb-plastic-shadow), inset 0 1px 0 rgba(255,255,255,0.3)",
-        }}
-      >
-        <div className="text-center mb-4">
-          <div
-            className="text-sm font-bold tracking-wider"
-            style={{ color: "#6b7280" }}
+    <div className="min-h-screen flex items-center justify-center bg-neutral-950 p-6">
+      <div className="w-[420px] max-w-full rounded-3xl bg-neutral-900 p-6 shadow-2xl border border-neutral-800">
+        {/* Optional top bar */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-neutral-200 font-semibold">Birthday Gift</div>
+
+          {/* Optional power button */}
+          <button
+            onClick={togglePower}
+            className="px-3 py-1 rounded-lg bg-neutral-800 text-neutral-100 text-sm hover:bg-neutral-700"
           >
-            Nintendo
-          </div>
-          <div
-            className="text-xs font-semibold tracking-widest"
-            style={{ color: "#9ca3af" }}
-          >
-            GAME BOY COLOR
-          </div>
+            Power
+          </button>
         </div>
 
-        <Screen
-          powerState={powerState}
-          gameState={gameState}
-          onStateChange={setGameState}
-          characterEquipment={characterEquipment}
-          onEquipmentChange={setCharacterEquipment}
-          dpadDirection={dpadDirection}
-          aButtonPressed={aButtonPressed}
-          bButtonPressed={bButtonPressed}
-        />
+        {/* Screen */}
+        <div className="rounded-2xl bg-black border border-neutral-800 overflow-hidden">
+          <Screen
+            powerState={powerState}
+            gameState={gameState}
+            onStateChange={setGameState}
+            character={character}
+            onCharacterChange={setCharacter}
+          />
+        </div>
 
-        <Controls
-          onPowerToggle={handlePowerToggle}
-          onButtonPress={handleButtonPress}
-          onDPadPress={handleDPadPress}
-          powerState={powerState}
-        />
+        {/* Optional controls UI area */}
+        <div className="mt-5 text-neutral-500 text-xs">
+          Tip: Select a character → Battle Big Mom
+        </div>
       </div>
     </div>
   );
