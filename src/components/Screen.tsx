@@ -1,6 +1,6 @@
 import { HomeScreen } from './screens/HomeScreen';
 import { SplashScreen } from './screens/SplashScreen';
-import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
+import { CharacterSelectScreen } from './screens/CharacterSelectScreen';
 import { BattleScreen } from './screens/BattleScreen';
 import { WinScreen } from './screens/WinScreen';
 import { LoseScreen } from './screens/LoseScreen';
