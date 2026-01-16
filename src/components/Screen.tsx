@@ -24,7 +24,7 @@ export function Screen({
   character,
   onCharacterChange,
 }: ScreenProps) {
-  //  power logic, remove this block and always render screens.
+  //  power logic
   if (powerState !== "on") {
     return (
       <div className="w-full h-[540px] bg-black flex items-center justify-center">
@@ -39,8 +39,9 @@ export function Screen({
         <HomeScreen
           onStart={() => onStateChange("character-select")}
           onCredits={() => onStateChange("credits")}
-        />
-      )}
+  />
+)}
+
 
       {gameState === "character-select" && (
         <CharacterSelectScreen
@@ -60,9 +61,23 @@ export function Screen({
         />
       )}
 
-      {gameState === "win" && <WinScreen onHome={() => onStateChange("home")} />}
-      {gameState === "lose" && <LoseScreen onRetry={() => onStateChange("battle")} onHome={() => onStateChange("home")} />}
-      {gameState === "credits" && <CreditsScreen onBack={() => onStateChange("home")} />}
+      {gameState === "win" && (
+        <WinScreen
+          onContinue={() => onStateChange("credits")}
+        />
+      )}
+
+      {gameState === "lose" && (
+        <LoseScreen
+          onContinue={() => onStateChange("credits")}
+        />
+      )}
+
+      {gameState === "credits" && (
+        <CreditsScreen
+          onReturnHome={() => onStateChange("home")}
+        />
+      )}
     </div>
   );
 }
